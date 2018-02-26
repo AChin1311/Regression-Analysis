@@ -18,9 +18,8 @@ def load_dataset(untilweek, untilday):
         today = day
         index += 1
         data.append([0]*5)
-      
       workflow_ID = int(workflow_ID[-1])
-      data[index][workflow_ID] += float(backup_size)
+      data[index][workflow_ID] += float(backup_size) 
     print(len(data)) 
   csvfile.close()
   return data
@@ -30,13 +29,15 @@ for i in range(5):
   y = [day20[j][i] for j in range(20)]
   x = range(20)
   plt.plot(x, y)
+  plt.axis([0, 19, 0, 11])
 plt.savefig('plot/day20.png')
 plt.clf()
 
-day105 = load_dataset(8, "Monday")
+day105 = load_dataset("16", "Monday")
 for i in range(5):
   y = [day105[j][i] for j in range(105)]
   x = range(105)
+  plt.axis([0, 104, 0, 11])
   plt.plot(x, y)
 plt.savefig('plot/day105.png')
 plt.clf()
