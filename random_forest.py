@@ -3,6 +3,7 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.datasets import make_regression
 from sklearn import preprocessing
 import matplotlib.pyplot as plt
+import numpy as np
 
 def load_dataset():
   data_x = []
@@ -27,15 +28,16 @@ def load_dataset():
     print(len(data_x), len(data_x[0]))
     
   csvfile.close()
-  return data_x, data_y
+  return np.array(data_x), np.array(data_y)
 
 
 X, Y = load_dataset()
 print(X)
 
-le = preprocessing.LabelEncoder()
-le.fit(X)
-X = le.transform(X)
+
+for col in range(0,5):
+  le = preprocessing.LabelEncoder()
+  X[:,col] = le.fit_transform(X[:,col])
 
 print(X)
 
