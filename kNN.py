@@ -60,6 +60,9 @@ for kValue in K:
 
 # TODO: modify the plotting code below into loop above
 
+print("K = " , rmse.index(min(rmse)) + 1)
+print("best RMSE = " , (min(rmse)))
+
 plt.figure()
 y = rmse
 x = K
