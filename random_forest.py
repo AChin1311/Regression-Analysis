@@ -9,6 +9,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.model_selection import KFold
 from sklearn import datasets
+from sklearn.tree import export_graphviz
+import random
 
 def load_dataset():
   data_x = []
@@ -42,51 +44,71 @@ for col in range(0,5):
   le = preprocessing.LabelEncoder()
   X[:,col] = le.fit_transform(X[:,col])
 
-
 num_trees = list(range(1,201))
-num_features = [5]
-rmse = []
-oob_errors = []
+num_features = list(range(1,6))
+# num_trees = [200]
+# num_features = [5]
 
-
-for ntrees in num_trees:
-  for nfeatures in num_features:
-    print("tree: ", ntrees, ", features: ", nfeatures)
-    
+c = 0.1
+plt.figure()
+for nfeatures in num_features:
+  oob_errors = []
+  for ntrees in num_trees:
+    print("Doing OOB - tree: ", ntrees, ", features: ", nfeatures)
     # OOB (out of bag) error validation
     regr = RandomForestRegressor(n_estimators=ntrees, max_depth=4, max_features= nfeatures, oob_score=True, n_jobs=-1)
     regr.fit(X, Y)
     oob_errors.append(1- regr.oob_score_)
+  y = oob_errors
+  x = num_trees
+  s = 'min OOB error occurs at: ' + str(nfeatures) + ' ' + str(oob_errors.index(min(oob_errors)))
+  plt.plot(x, y, lw=2, label= s)
+  plt.grid(color=str(c), linestyle='--', linewidth=1)
+  c = c + 0.1
+plt.savefig('plot/2b(ii)-OOB.png')
+plt.clf()
+
+c = 0.1
+plt.figure()
+for nfeatures in num_features:
+  rmse = []
+  for ntrees in num_trees:
+    print("Doing rmse - tree: ", ntrees, ", features: ", nfeatures)
+
+    # ****** TODO: Choose the best paramenters ****** #
+    # Web visualization - http://webgraphviz.com/
+    if nfeatures == 5 and ntrees == 200:
+      export_graphviz(regr.estimators_[random.randint(0,ntrees-1)], out_file='tree.dot')
     
     # RMSE (cross validation)
-    
     # mse_scorer = make_scorer(mean_squared_error, greater_is_better=True)
     # rmse.append(np.sqrt(np.mean(cross_validation.cross_val_score(regr, X, Y, cv = 10, scoring=mse_scorer, n_jobs=-1))))
-    
-    mse =[]
+    test_mse =[]
+    train_mse =[]
     kf = KFold(n_splits=10, random_state=None, shuffle=False)
     for train_index, test_index in kf.split(X):
       X_train, X_test = X[train_index], X[test_index]
       Y_train, Y_test = Y[train_index], Y[test_index]
+      train_size = X_train.shape[0]
+      test_size = X_test.shape[0]
       regr = RandomForestRegressor(n_estimators=ntrees, max_depth=4, max_features= nfeatures, oob_score=True, n_jobs=-1)
       regr.fit(X_train, Y_train)
-      Y_predict = regr.predict(X_test)
-      mse.append(mean_squared_error(Y_test, Y_predict))
-    rmse.append(np.sqrt(np.mean(mse)))
+      Y_test_predict = regr.predict(X_test)
+      Y_train_predict = regr.predict(X_train)
+      test_mse.append(mean_squared_error(Y_test, Y_test_predict))
+      train_mse.append(mean_squared_error(Y_train, Y_train_predict)) 
+    rmse.append(np.sqrt(np.mean(test_mse)))
 
-# TODO: modify the plotting code below into loop above
-
-plt.figure()
-y = oob_errors
-x = num_trees
-plt.plot(x, y)
-plt.savefig('plot/figure1.png')
+    if nfeatures == 5 and ntrees == 200:
+      print('2b(i): training rmse is ', np.sqrt(np.mean(train_mse)))
+      print('2b(i): testing rmse is ', np.sqrt(np.mean(test_mse)))
+  y = rmse
+  x = num_trees
+  s = 'min RMSE occurs at: ' + str(nfeatures) + ' ' + str(rmse.index(min(rmse)))
+  plt.plot(x, y, lw=2, label=s )
+  plt.grid(color=str(c), linestyle='--', linewidth=1)
+  c = c + 0.1
+plt.savefig('plot/2b(ii)-RMSE.png')
 plt.clf()
 
-
-plt.figure()
-y = rmse
-x = num_trees
-plt.plot(x, y)
-plt.savefig('plot/figure2.png')
-plt.clf()
+  

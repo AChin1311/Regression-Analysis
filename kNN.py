@@ -44,16 +44,19 @@ for kValue in K:
   # mse_scorer = make_scorer(mean_squared_error, greater_is_better=True)
   # rmse.append(np.sqrt(np.mean(cross_validation.cross_val_score(regr, X, Y, cv = 10, scoring=mse_scorer, n_jobs=-1))))
   
-  mse =[]
+  test_mse = []
+  # train_mse = []
   kf = KFold(n_splits=10, random_state=None, shuffle=False)
   for train_index, test_index in kf.split(X):
     X_train, X_test = X[train_index], X[test_index]
     Y_train, Y_test = Y[train_index], Y[test_index]
     regr = KNeighborsRegressor(n_neighbors=kValue, n_jobs=-1)
     regr.fit(X_train, Y_train)
-    Y_predict = regr.predict(X_test)
-    mse.append(mean_squared_error(Y_test, Y_predict))
-  rmse.append(np.sqrt(np.mean(mse)))
+    Y_test_predict = regr.predict(X_test)
+    Y_train_predict = regr.predict(X_train)
+    test_mse.append(mean_squared_error(Y_test, Y_test_predict))
+    # train_mse.append(mean_squared_error(Y_train, Y_train_predict)) 
+  rmse.append(np.sqrt(np.mean(test_mse)))
 
 # TODO: modify the plotting code below into loop above
 
