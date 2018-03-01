@@ -50,31 +50,36 @@ num_features = list(range(1,6))
 # num_features = [5]
 
 c = 0.1
+min_oob_index = []
 plt.figure()
 for nfeatures in num_features:
   oob_errors = []
   for ntrees in num_trees:
-    print("Doing OOB - tree: ", ntrees, ", features: ", nfeatures)
+    print("Doing OOB - features: ", nfeatures, ", trees: ", ntrees)
     # OOB (out of bag) error validation
     regr = RandomForestRegressor(n_estimators=ntrees, max_depth=4, max_features= nfeatures, oob_score=True, n_jobs=-1)
     regr.fit(X, Y)
     oob_errors.append(1- regr.oob_score_)
+  
+  min_oob_index.append(oob_errors.index(min(oob_errors)))
+
   y = oob_errors
   x = num_trees
-  s = 'min OOB error occurs at: ' + str(nfeatures) + ' ' + str(oob_errors.index(min(oob_errors)))
-  plt.plot(x, y, lw=2, label= s)
+  plt.plot(x, y, lw=2, label= "# of feature = "+str(nfeatures))
   plt.grid(color=str(c), linestyle='--', linewidth=1)
   c = c + 0.1
+plt.legend()
 plt.savefig('plot/2b(ii)-OOB.png')
 plt.clf()
 
+
 c = 0.1
+min_rmse_index = []
 plt.figure()
 for nfeatures in num_features:
   rmse = []
+  print("Doing rmse - features: ", nfeatures, ", trees: ", ntrees)
   for ntrees in num_trees:
-    print("Doing rmse - tree: ", ntrees, ", features: ", nfeatures)
-
     # ****** TODO: Choose the best paramenters ****** #
     # Web visualization - http://webgraphviz.com/
     if nfeatures == 5 and ntrees == 200:
@@ -91,7 +96,7 @@ for nfeatures in num_features:
       Y_train, Y_test = Y[train_index], Y[test_index]
       train_size = X_train.shape[0]
       test_size = X_test.shape[0]
-      regr = RandomForestRegressor(n_estimators=ntrees, max_depth=4, max_features= nfeatures, oob_score=True, n_jobs=-1)
+      regr = RandomForestRegressor(n_estimators=ntrees, max_depth=4, max_features= nfeatures, n_jobs=-1)
       regr.fit(X_train, Y_train)
       Y_test_predict = regr.predict(X_test)
       Y_train_predict = regr.predict(X_train)
@@ -102,13 +107,22 @@ for nfeatures in num_features:
     if nfeatures == 5 and ntrees == 200:
       print('2b(i): training rmse is ', np.sqrt(np.mean(train_mse)))
       print('2b(i): testing rmse is ', np.sqrt(np.mean(test_mse)))
+  
+  min_rmse_index.append(oob_errors.index(min(oob_errors)))
+  
   y = rmse
   x = num_trees
-  s = 'min RMSE occurs at: ' + str(nfeatures) + ' ' + str(rmse.index(min(rmse)))
-  plt.plot(x, y, lw=2, label=s )
+  plt.plot(x, y, lw=2, label="# of feature = "+str(nfeatures))
   plt.grid(color=str(c), linestyle='--', linewidth=1)
   c = c + 0.1
+plt.legend()
 plt.savefig('plot/2b(ii)-RMSE.png')
 plt.clf()
+
+
+print("min OOB error index:")
+print(min_oob_index)
+print("min RMSE index:")
+print(min_rmse_index)
 
   
