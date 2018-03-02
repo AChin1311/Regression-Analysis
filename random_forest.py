@@ -24,7 +24,8 @@ def load_dataset():
       week, day, start_time, workflow_ID, filename, backup_size, backup_time = row
       data_x.append(row[:5])
       data_y.append(float(backup_size))
-    
+    print(len(data_x))
+    print(len(data_y))
   csvfile.close()
   return np.array(data_x), np.array(data_y)
 
@@ -34,15 +35,6 @@ X, Y = load_dataset()
 for col in range(0,5):
   le = preprocessing.LabelEncoder()
   X[:,col] = le.fit_transform(X[:,col])
-
-# ****** TODO: Choose the best paramenters ****** #
-# Web visualization - http://webgraphviz.com/
-n = 58
-f = 4
-regr = RandomForestRegressor(n_estimators=n, max_depth=4, max_features= f, n_jobs=-1)
-regr.fit(X, Y)
-print("feature_importance: ", regr.feature_importances_)
-export_graphviz(regr.estimators_[random.randint(0,n-1)], out_file='tree.dot')
 
 # num_trees = list(range(1,201))
 # num_features = list(range(1,6))
@@ -118,4 +110,36 @@ export_graphviz(regr.estimators_[random.randint(0,n-1)], out_file='tree.dot')
 # print("min RMSE index:")
 # print(min_rmse_index)
 
-  
+# ****** TODO: Choose the best paramenters ****** #
+# Web visualization - http://webgraphviz.com/
+n = 20
+f = 5
+regr = RandomForestRegressor(n_estimators=n, max_depth=4, max_features= f, n_jobs=-1)
+regr.fit(X, Y)
+Y_predict = regr.predict(X)
+# print("feature_importance: ", regr.feature_importances_)
+# export_graphviz(regr.estimators_[random.randint(0,n-1)], out_file='tree.dot')
+
+print(Y.shape[0])
+print(X.shape[0])
+
+plt.figure()
+y = Y_predict
+x = Y
+plt.scatter(x, y, marker='.')
+plt.axis([0,1,0,1])
+plt.savefig('plot/2b-Fitted-True.png')
+plt.clf()
+
+
+plt.figure()
+y = np.abs(np.array(Y_predict)- np.array(Y))
+x = Y_predict
+plt.scatter(x, y, marker='.')
+plt.axis([0,1,0,1])
+plt.savefig('plot/2b-Residual-Fitted.png')
+plt.clf()
+
+
+
+
