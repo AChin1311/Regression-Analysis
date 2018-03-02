@@ -39,6 +39,7 @@ for col in range(0,5):
 # num_trees = list(range(1,201))
 # num_features = list(range(1,6))
 
+### for 2b-(ii) ###
 # c = 0.1
 # min_oob_index = []
 # plt.figure()
@@ -62,7 +63,7 @@ for col in range(0,5):
 # plt.savefig('plot/2b(ii)-OOB.png')
 # plt.clf()
 
-
+### for 2b-(ii) ###
 # c = 0.1
 # min_rmse_index = []
 # plt.figure()
@@ -92,9 +93,9 @@ for col in range(0,5):
 #     if nfeatures == 5 and ntrees == 200:
 #       print('2b(i): training rmse is ', np.sqrt(np.mean(train_mse)))
 #       print('2b(i): testing rmse is ', np.sqrt(np.mean(test_mse)))
-  
+
 #   min_rmse_index.append(rmse.index(min(rmse)))
-  
+
 #   y = rmse
 #   x = num_trees
 #   plt.plot(x, y, lw=2, label="# of feature = "+str(nfeatures))
@@ -104,12 +105,13 @@ for col in range(0,5):
 # plt.savefig('plot/2b(ii)-RMSE.png')
 # plt.clf()
 
-
 # print("min OOB error index:")
 # print(min_oob_index)
 # print("min RMSE index:")
 # print(min_rmse_index)
 
+
+###  for 2b-(iv)&(v)  ###
 # ****** TODO: Choose the best paramenters ****** #
 # Web visualization - http://webgraphviz.com/
 n = 20
@@ -117,11 +119,13 @@ f = 5
 regr = RandomForestRegressor(n_estimators=n, max_depth=4, max_features= f, n_jobs=-1)
 regr.fit(X, Y)
 Y_predict = regr.predict(X)
-# print("feature_importance: ", regr.feature_importances_)
-# export_graphviz(regr.estimators_[random.randint(0,n-1)], out_file='tree.dot')
+print("feature_importance: ", regr.feature_importances_)
+export_graphviz(regr.estimators_[random.randint(0,n-1)], out_file='tree.dot')
 
 print(Y.shape[0])
 print(X.shape[0])
+
+###  for the stupid spec ###
 
 plt.figure()
 xi = range(0,2)
