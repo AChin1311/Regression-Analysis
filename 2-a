@@ -4,6 +4,7 @@ from sklearn import linear_model
 from sklearn.model_selection import cross_val_predict, cross_val_score
 from sklearn import metrics
 from sklearn import preprocessing
+from sklearn.feature_selection import f_regression, mutual_info_regression
 import matplotlib.pyplot as plt
 
 
@@ -44,7 +45,9 @@ print("====== <i> Linear Regression ======")
 
 model_1 = linear_model.LinearRegression()
 Y_pred1 = cross_val_predict(model_1, X, Y, cv=10)
-print('Scalar Val RMSE =',np.sqrt(metrics.mean_squared_error(Y,Y_pred1)))
+print('Scalar  Val RMSE =',np.sqrt(metrics.mean_squared_error(Y,Y_pred1)))
+#Scalar  Val RMSE = 0.1036758588449451
+
 
 
 
@@ -55,23 +58,64 @@ print('Scalar Val RMSE =',np.sqrt(metrics.mean_squared_error(Y,Y_pred1)))
 print("====== <ii> Data Preprocessing ======")
 
 
-#X_try = np.array([[2,3,4],[1,2,0]])
-
 enc1 =  preprocessing.OneHotEncoder(sparse = False)
 #enc1 =  preprocessing.OneHotEncoder()
 enc1.fit(X)
 
-print(enc1.n_values_)
-print(enc1.feature_indices_)
+#print(enc1.n_values_)
+#print(enc1.feature_indices_)
 
 X_Hot = enc1.fit_transform(X)
 
-
 Y_pred2 = cross_val_predict(model_1, X_Hot, Y, cv=10)
 print('One-Hot Val RMSE =',np.sqrt(metrics.mean_squared_error(Y,Y_pred2)))
+#One-Hot Val RMSE = 272660626045.4346
 
 
 
+
+
+
+
+
+""" ====== <iii> Feature Selection ====== """
+print("====== <iii> Feature Selection ======")
+
+
+f_test, _ = f_regression(X, Y)
+f_test #/= np.max(f_test)
+print("f_test")
+print(f_test)
+
+# best 123
+
+
+m_test = mutual_info_regression(X, Y)
+m_test /= np.max(m_test)
+print("m_test")
+print(m_test)
+
+# best 123
+
+X_FS = X[:,1:4]
+
+#X2 =X_FS
+
+
+Y_pred_FS = cross_val_predict(model_1, X_FS, Y, cv=10)
+print('Scalar  Val RMSE =',np.sqrt(metrics.mean_squared_error(Y,Y_pred_FS)))
+#Scalar  Val RMSE = 0.1036706732800221
+# almost the same
+
+
+
+
+
+
+
+
+
+print("completed")
 
 
 
