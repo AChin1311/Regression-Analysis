@@ -1,0 +1,78 @@
+import numpy as np
+import pandas as pd
+from sklearn import linear_model
+from sklearn.model_selection import cross_val_predict, cross_val_score
+from sklearn import metrics
+from sklearn import preprocessing
+import matplotlib.pyplot as plt
+
+
+
+
+
+""" ====== Change to scalar ====== """
+
+content = pd.read_csv("network_backup_dataset.csv")
+content = content.replace({'Day of Week': {'Monday' : 0, 'Tuesday' : 1, 'Wednesday' : 2 ,
+                                         'Thursday' : 3, 'Friday' : 4,
+                                         'Saturday' : 5, 'Sunday' : 6 }})
+
+WorkFlow_list = sorted(pd.unique(content['Work-Flow-ID']))
+File_list     = sorted(pd.unique(content['File Name']))  
+num_WorkFlow  = len(WorkFlow_list)
+num_File      = len(File_list)
+
+for i in np.arange(num_WorkFlow):
+    content = content.replace({'Work-Flow-ID': {'work_flow_%d'%i:i}})
+
+for i in np.arange(num_File):
+    content = content.replace({'File Name': {'File_%d'%i:i}})
+
+
+content_all_np = content.values
+X = content_all_np[: , 0:5]
+Y = content_all_np[: ,  5 ]
+
+
+del WorkFlow_list,File_list,content_all_np, num_WorkFlow,num_File,i
+# delete unused variables
+
+
+""" ====== <i> Linear Regression ====== """
+print("====== <i> Linear Regression ======")
+
+
+model_1 = linear_model.LinearRegression()
+Y_pred1 = cross_val_predict(model_1, X, Y, cv=10)
+print('Scalar Val RMSE =',np.sqrt(metrics.mean_squared_error(Y,Y_pred1)))
+
+
+
+
+
+
+""" ====== <ii> Data Preprocessing ====== """
+print("====== <ii> Data Preprocessing ======")
+
+
+#X_try = np.array([[2,3,4],[1,2,0]])
+
+enc1 =  preprocessing.OneHotEncoder(sparse = False)
+#enc1 =  preprocessing.OneHotEncoder()
+enc1.fit(X)
+
+print(enc1.n_values_)
+print(enc1.feature_indices_)
+
+X_Hot = enc1.fit_transform(X)
+
+
+Y_pred2 = cross_val_predict(model_1, X_Hot, Y, cv=10)
+print('One-Hot Val RMSE =',np.sqrt(metrics.mean_squared_error(Y,Y_pred2)))
+
+
+
+
+
+
+
