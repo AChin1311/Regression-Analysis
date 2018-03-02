@@ -59,6 +59,8 @@ for col in range(0,5):
 #   plt.plot(x, y, lw=2, label= "# of feature = "+str(nfeatures))
 #   plt.grid(color=str(c), linestyle='--', linewidth=1)
 #   c = c + 0.1
+# plt.xlabel('# of trees')
+# plt.ylabel('OOB')
 # plt.legend()
 # plt.savefig('plot/2b(ii)-OOB.png')
 # plt.clf()
@@ -101,6 +103,8 @@ for col in range(0,5):
 #   plt.plot(x, y, lw=2, label="# of feature = "+str(nfeatures))
 #   plt.grid(color=str(c), linestyle='--', linewidth=1)
 #   c = c + 0.1
+# plt.xlabel('# of trees')
+# plt.ylabel('RMSE')
 # plt.legend()
 # plt.savefig('plot/2b(ii)-RMSE.png')
 # plt.clf()
@@ -122,30 +126,35 @@ Y_predict = regr.predict(X)
 print("feature_importance: ", regr.feature_importances_)
 export_graphviz(regr.estimators_[random.randint(0,n-1)], out_file='tree.dot')
 
-print(Y.shape[0])
-print(X.shape[0])
-
 ###  for the stupid spec ###
 
 plt.figure()
 
-xi = range(0,20)
+
+xi = range(0,2)
+
 yi = [i for i in xi]
 
+plt.figure()
 y = Y_predict
 x = Y
+
 plt.scatter(x, y, s = 1, alpha=0.01)
+
 plt.axis([0,1,0,1])
+plt.xlabel('true value')
+plt.ylabel('fitted value')
 plt.plot(xi,yi)
 plt.savefig('plot/2b-Fitted-True.png')
 plt.clf()
 
-
 plt.figure()
-y = np.abs(np.array(Y_predict)- np.array(Y))
+y = np.abs(Y_predict-Y)
 x = Y_predict
-plt.scatter(x, y, marker='.')
+plt.scatter(x, y, s=1, marker='.')
 plt.axis([0,1,0,1])
+plt.xlabel('fitted value')
+plt.ylabel('residuals')
 plt.plot(xi,yi)
 plt.savefig('plot/2b-Residual-Fitted.png')
 plt.clf()
