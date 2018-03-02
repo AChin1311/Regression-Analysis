@@ -139,7 +139,7 @@ plt.figure()
 y = Y_predict
 x = Y
 
-plt.scatter(x, y, s = 1, alpha=0.01)
+plt.scatter(x, y, s = 1,  alpha=0.01)
 
 plt.axis([0,1,0,1])
 plt.xlabel('true value')
@@ -151,7 +151,7 @@ plt.clf()
 plt.figure()
 y = np.abs(Y_predict-Y)
 x = Y_predict
-plt.scatter(x, y, s=1, marker='.')
+plt.scatter(x, y, s=1, alpha=0.01)
 plt.axis([0,1,0,1])
 plt.xlabel('fitted value')
 plt.ylabel('residuals')
