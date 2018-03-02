@@ -128,12 +128,13 @@ print(X.shape[0])
 ###  for the stupid spec ###
 
 plt.figure()
-xi = range(0,2)
+
+xi = range(0,20)
 yi = [i for i in xi]
 
 y = Y_predict
 x = Y
-plt.scatter(x, y, marker='.')
+plt.scatter(x, y, s = 1, alpha=0.01)
 plt.axis([0,1,0,1])
 plt.plot(xi,yi)
 plt.savefig('plot/2b-Fitted-True.png')
