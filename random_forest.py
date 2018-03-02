@@ -139,9 +139,12 @@ plt.figure()
 y = Y_predict
 x = Y
 
+
+
+
 plt.scatter(x, y, s = 1,  alpha=0.01)
 
-plt.axis([0,1,0,1])
+plt.axis([-0.03,1.03,-0.03,1.03])
 plt.xlabel('true value')
 plt.ylabel('fitted value')
 plt.plot(xi,yi)
@@ -152,10 +155,9 @@ plt.figure()
 y = np.abs(Y_predict-Y)
 x = Y_predict
 plt.scatter(x, y, s=1, alpha=0.01)
-plt.axis([0,1,0,1])
+plt.axis([-0.03,1.03,-0.03,1.03])
 plt.xlabel('fitted value')
 plt.ylabel('residuals')
-plt.plot(xi,yi)
 plt.savefig('plot/2b-Residual-Fitted.png')
 plt.clf()
 
