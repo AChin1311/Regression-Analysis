@@ -127,6 +127,8 @@ print("feature_importance: ", regr.feature_importances_)
 export_graphviz(regr.estimators_[random.randint(0,n-1)], out_file='tree.dot')
 
 ###  for the stupid spec ###
+xi = range(0,2)
+yi = [i for i in xi]
 
 plt.figure()
 y = Y_predict
@@ -138,7 +140,6 @@ plt.ylabel('fitted value')
 plt.plot(xi,yi)
 plt.savefig('plot/2b-Fitted-True.png')
 plt.clf()
-
 
 plt.figure()
 y = np.abs(Y_predict-Y)
