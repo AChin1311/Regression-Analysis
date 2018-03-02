@@ -37,84 +37,85 @@ for col in range(0,5):
 
 # ****** TODO: Choose the best paramenters ****** #
 # Web visualization - http://webgraphviz.com/
-n = 20
+n = 58
 f = 4
 regr = RandomForestRegressor(n_estimators=n, max_depth=4, max_features= f, n_jobs=-1)
 regr.fit(X, Y)
+print("feature_importance: ", regr.feature_importances_)
 export_graphviz(regr.estimators_[random.randint(0,n-1)], out_file='tree.dot')
 
-num_trees = list(range(1,201))
-num_features = list(range(1,6))
+# num_trees = list(range(1,201))
+# num_features = list(range(1,6))
 
-c = 0.1
-min_oob_index = []
-plt.figure()
-for nfeatures in num_features:
-  oob_errors = []
-  for ntrees in num_trees:
-    print("Doing OOB - features: ", nfeatures, ", trees: ", ntrees)
-    # OOB (out of bag) error validation
-    regr = RandomForestRegressor(n_estimators=ntrees, max_depth=4, max_features= nfeatures, oob_score=True, n_jobs=-1)
-    regr.fit(X, Y)
-    oob_errors.append(1- regr.oob_score_)
+# c = 0.1
+# min_oob_index = []
+# plt.figure()
+# for nfeatures in num_features:
+#   oob_errors = []
+#   for ntrees in num_trees:
+#     print("Doing OOB - features: ", nfeatures, ", trees: ", ntrees)
+#     # OOB (out of bag) error validation
+#     regr = RandomForestRegressor(n_estimators=ntrees, max_depth=4, max_features= nfeatures, oob_score=True, n_jobs=-1)
+#     regr.fit(X, Y)
+#     oob_errors.append(1- regr.oob_score_)
   
-  min_oob_index.append(oob_errors.index(min(oob_errors)))
+#   min_oob_index.append(oob_errors.index(min(oob_errors)))
 
-  y = oob_errors
-  x = num_trees
-  plt.plot(x, y, lw=2, label= "# of feature = "+str(nfeatures))
-  plt.grid(color=str(c), linestyle='--', linewidth=1)
-  c = c + 0.1
-plt.legend()
-plt.savefig('plot/2b(ii)-OOB.png')
-plt.clf()
+#   y = oob_errors
+#   x = num_trees
+#   plt.plot(x, y, lw=2, label= "# of feature = "+str(nfeatures))
+#   plt.grid(color=str(c), linestyle='--', linewidth=1)
+#   c = c + 0.1
+# plt.legend()
+# plt.savefig('plot/2b(ii)-OOB.png')
+# plt.clf()
 
 
-c = 0.1
-min_rmse_index = []
-plt.figure()
-for nfeatures in num_features:
-  rmse = []
-  print("Doing rmse - features: ", nfeatures, ", trees: ", ntrees)
-  for ntrees in num_trees:    
-    # RMSE (cross validation)
-    # mse_scorer = make_scorer(mean_squared_error, greater_is_better=True)
-    # rmse.append(np.sqrt(np.mean(cross_validation.cross_val_score(regr, X, Y, cv = 10, scoring=mse_scorer, n_jobs=-1))))
-    test_mse =[]
-    train_mse =[]
-    kf = KFold(n_splits=10, random_state=None, shuffle=False)
-    for train_index, test_index in kf.split(X):
-      X_train, X_test = X[train_index], X[test_index]
-      Y_train, Y_test = Y[train_index], Y[test_index]
-      train_size = X_train.shape[0]
-      test_size = X_test.shape[0]
-      regr = RandomForestRegressor(n_estimators=ntrees, max_depth=4, max_features= nfeatures, n_jobs=-1)
-      regr.fit(X_train, Y_train)
-      Y_test_predict = regr.predict(X_test)
-      Y_train_predict = regr.predict(X_train)
-      test_mse.append(mean_squared_error(Y_test, Y_test_predict))
-      train_mse.append(mean_squared_error(Y_train, Y_train_predict)) 
-    rmse.append(np.sqrt(np.mean(test_mse)))
+# c = 0.1
+# min_rmse_index = []
+# plt.figure()
+# for nfeatures in num_features:
+#   rmse = []
+#   print("Doing rmse - features: ", nfeatures, ", trees: ", ntrees)
+#   for ntrees in num_trees:    
+#     # RMSE (cross validation)
+#     # mse_scorer = make_scorer(mean_squared_error, greater_is_better=True)
+#     # rmse.append(np.sqrt(np.mean(cross_validation.cross_val_score(regr, X, Y, cv = 10, scoring=mse_scorer, n_jobs=-1))))
+#     test_mse =[]
+#     train_mse =[]
+#     kf = KFold(n_splits=10, random_state=None, shuffle=False)
+#     for train_index, test_index in kf.split(X):
+#       X_train, X_test = X[train_index], X[test_index]
+#       Y_train, Y_test = Y[train_index], Y[test_index]
+#       train_size = X_train.shape[0]
+#       test_size = X_test.shape[0]
+#       regr = RandomForestRegressor(n_estimators=ntrees, max_depth=4, max_features= nfeatures, n_jobs=-1)
+#       regr.fit(X_train, Y_train)
+#       Y_test_predict = regr.predict(X_test)
+#       Y_train_predict = regr.predict(X_train)
+#       test_mse.append(mean_squared_error(Y_test, Y_test_predict))
+#       train_mse.append(mean_squared_error(Y_train, Y_train_predict)) 
+#     rmse.append(np.sqrt(np.mean(test_mse)))
 
-    if nfeatures == 5 and ntrees == 200:
-      print('2b(i): training rmse is ', np.sqrt(np.mean(train_mse)))
-      print('2b(i): testing rmse is ', np.sqrt(np.mean(test_mse)))
+#     if nfeatures == 5 and ntrees == 200:
+#       print('2b(i): training rmse is ', np.sqrt(np.mean(train_mse)))
+#       print('2b(i): testing rmse is ', np.sqrt(np.mean(test_mse)))
   
-  min_rmse_index.append(rmse.index(min(rmse)))
+#   min_rmse_index.append(rmse.index(min(rmse)))
   
-  y = rmse
-  x = num_trees
-  plt.plot(x, y, lw=2, label="# of feature = "+str(nfeatures))
-  plt.grid(color=str(c), linestyle='--', linewidth=1)
-  c = c + 0.1
-plt.legend()
-plt.savefig('plot/2b(ii)-RMSE.png')
-plt.clf()
+#   y = rmse
+#   x = num_trees
+#   plt.plot(x, y, lw=2, label="# of feature = "+str(nfeatures))
+#   plt.grid(color=str(c), linestyle='--', linewidth=1)
+#   c = c + 0.1
+# plt.legend()
+# plt.savefig('plot/2b(ii)-RMSE.png')
+# plt.clf()
 
 
-print("min OOB error index:")
-print(min_oob_index)
-print("min RMSE index:")
-print(min_rmse_index)
+# print("min OOB error index:")
+# print(min_oob_index)
+# print("min RMSE index:")
+# print(min_rmse_index)
 
   
