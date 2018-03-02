@@ -108,7 +108,7 @@ for nfeatures in num_features:
       print('2b(i): training rmse is ', np.sqrt(np.mean(train_mse)))
       print('2b(i): testing rmse is ', np.sqrt(np.mean(test_mse)))
   
-  min_rmse_index.append(oob_errors.index(min(oob_errors)))
+  min_rmse_index.append(rmse.index(min(rmse)))
   
   y = rmse
   x = num_trees
