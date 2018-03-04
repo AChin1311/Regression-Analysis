@@ -39,11 +39,12 @@ X = enc.fit_transform(X_).toarray()
 
 print(X[1])
 
-rmse = []
+
 N = list(range(1,201))
 plt.figure()
 activation = ['logistic', 'tanh', 'relu']
 for act in activation:
+  rmse = []
   for n in N:
     print("N: ", n)
     # RMSE (cross validation)
@@ -69,7 +70,9 @@ for act in activation:
 
   y = rmse
   x = N
-  plt.plot(x, y)
+  plt.plot(x, y, lw=2, label=act)
+plt.xlabel('# of hidden units')
+plt.ylabel('RMSE')
 plt.savefig('plot/NN.png')
 plt.clf()
 
