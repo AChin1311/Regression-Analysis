@@ -40,39 +40,89 @@ X = enc.fit_transform(X_).toarray()
 print(X[1])
 
 
-N = list(range(1,201))
+# N = list(range(1,101))
+# plt.figure()
+# activation = ['logistic', 'tanh', 'relu']
+# for act in activation:
+#   rmse = []
+#   for n in N:
+#     print("N: ", n)
+#     # RMSE (cross validation)
+    
+#     # mse_scorer = make_scorer(mean_squared_error, greater_is_better=True)
+#     # rmse.append(np.sqrt(np.mean(cross_validation.cross_val_score(regr, X, Y, cv = 10, scoring=mse_scorer, n_jobs=-1))))
+    
+#     mse =[]
+#     kf = KFold(n_splits=10, random_state=None, shuffle=False)
+#     for train_index, test_index in kf.split(X):
+#       X_train, X_test = X[train_index], X[test_index]
+#       Y_train, Y_test = Y[train_index], Y[test_index]
+
+#       clf = MLPRegressor(hidden_layer_sizes=(n), activation=act)
+
+#       clf.fit(X_train, Y_train)
+#       Y_predict = clf.predict(X_test)
+#       mse.append(mean_squared_error(Y_test, Y_predict))
+#     rmse.append(np.sqrt(np.mean(mse)))
+
+#   print("min_index:", act, rmse.index(min(rmse)))
+#   # TODO: modify the plotting code below into loop above
+
+#   y = rmse
+#   x = N
+#   plt.plot(x, y, lw=2, label=act)
+# plt.xlabel('# of hidden units')
+# plt.ylabel('RMSE')
+# plt.legend()
+# plt.savefig('plot/NN.png')
+# plt.clf()
+
+# train rmse and test rmse
+train_mse =[]
+test_mse =[]
+train_rmse =[]
+test_rmse =[]
+n = 85
+act = 'relu'
+kf = KFold(n_splits=10, random_state=None, shuffle=False)
+for train_index, test_index in kf.split(X):
+  X_train, X_test = X[train_index], X[test_index]
+  Y_train, Y_test = Y[train_index], Y[test_index]
+  clf = MLPRegressor(hidden_layer_sizes=n, activation=act)
+  clf.fit(X_train, Y_train)
+  Y_predict = clf.predict(X)
+  Y_test_predict = clf.predict(X_test)
+  Y_train_predict = clf.predict(X_train)
+  train_mse.append(mean_squared_error(Y_train, Y_train_predict))
+  test_mse.append(mean_squared_error(Y_test, Y_test_predict))
+train_rmse.append(np.sqrt(np.mean(train_mse)))
+test_rmse.append(np.sqrt(np.mean(test_mse)))
+print('train_rmse = ', train_rmse[0])
+print('test_rmse = ', test_rmse[0])
+
+
+# plotting fitted vs true value
 plt.figure()
-activation = ['logistic', 'tanh', 'relu']
-for act in activation:
-  rmse = []
-  for n in N:
-    print("N: ", n)
-    # RMSE (cross validation)
-    
-    # mse_scorer = make_scorer(mean_squared_error, greater_is_better=True)
-    # rmse.append(np.sqrt(np.mean(cross_validation.cross_val_score(regr, X, Y, cv = 10, scoring=mse_scorer, n_jobs=-1))))
-    
-    mse =[]
-    kf = KFold(n_splits=10, random_state=None, shuffle=False)
-    for train_index, test_index in kf.split(X):
-      X_train, X_test = X[train_index], X[test_index]
-      Y_train, Y_test = Y[train_index], Y[test_index]
-
-      clf = MLPRegressor(hidden_layer_sizes=(n), activation=act)
-
-      clf.fit(X_train, Y_train)
-      Y_predict = clf.predict(X_test)
-      mse.append(mean_squared_error(Y_test, Y_predict))
-    rmse.append(np.sqrt(np.mean(mse)))
-
-  print("min_index:", act, rmse.index(min(rmse)))
-  # TODO: modify the plotting code below into loop above
-
-  y = rmse
-  x = N
-  plt.plot(x, y, lw=2, label=act)
-plt.xlabel('# of hidden units')
-plt.ylabel('RMSE')
-plt.savefig('plot/NN.png')
+xi = range(0,2)
+yi = [i for i in xi]
+y = Y_predict
+x = Y
+plt.scatter(x, y, s = 1,  alpha=0.01)
+plt.axis([-0.03,1.03,-0.03,1.03])
+plt.xlabel('true value')
+plt.ylabel('fitted value')
+plt.plot(xi,yi)
+plt.savefig('plot/2c-Fitted-True.png')
 plt.clf()
+
+plt.figure()
+y = np.abs(Y_predict-Y)
+x = Y_predict
+plt.scatter(x, y, s=1, alpha=0.01)
+plt.axis([-0.03,1.03,-0.03,1.03])
+plt.xlabel('fitted value')
+plt.ylabel('residuals')
+plt.savefig('plot/2c-Residual-Fitted.png')
+plt.clf()
+
 

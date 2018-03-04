@@ -192,25 +192,18 @@ print(min_rmse_index)
 # Web visualization - http://webgraphviz.com/
 regr = RandomForestRegressor(n_estimators=n, max_depth=4, max_features= f, n_jobs=-1)
 regr.fit(X, Y)
-Y_predict = regr.predict(X)
+Y_predict = regr.predict(X_test)
 print("feature_importance: ", regr.feature_importances_)
 export_graphviz(regr.estimators_[random.randint(0,n-1)], out_file='tree.dot')
 
-###  for the stupid spec ###
+###  plotting RMSE for train and test ###
 
 plt.figure()
-
-
 xi = range(0,2)
-
 yi = [i for i in xi]
-
-plt.figure()
 y = Y_predict
-x = Y
-
+x = Y_test
 plt.scatter(x, y, s = 1,  alpha=0.01)
-
 plt.axis([-0.03,1.03,-0.03,1.03])
 plt.xlabel('true value')
 plt.ylabel('fitted value')
@@ -219,7 +212,7 @@ plt.savefig('plot/2b-Fitted-True.png')
 plt.clf()
 
 plt.figure()
-y = np.abs(Y_predict-Y)
+y = np.abs(Y_predict-Y_test)
 x = Y_predict
 plt.scatter(x, y, s=1, alpha=0.01)
 plt.axis([-0.03,1.03,-0.03,1.03])
