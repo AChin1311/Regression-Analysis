@@ -1,13 +1,12 @@
 import numpy as np
 import pandas as pd
 from sklearn import linear_model
-from sklearn.model_selection import cross_val_predict, cross_val_score
+from sklearn.model_selection import KFold
 from sklearn import metrics
 from sklearn.preprocessing import StandardScaler
-from sklearn import preprocessing
+#from sklearn import preprocessing
 from sklearn.feature_selection import f_regression, mutual_info_regression
-import matplotlib.pyplot as plt
-
+#import matplotlib.pyplot as plt
 
 
 
@@ -39,22 +38,54 @@ Y = content_all_np[: ,  5 ]
 del WorkFlow_list,File_list,content_all_np, num_WorkFlow,num_File,i
 # delete unused variables
 
-
+print("\n")
 """ ====== <i> Linear Regression ====== """
 print("====== <i> Linear Regression ======")
 
 
-model_1 = linear_model.LinearRegression()
-Y_pred1 = cross_val_predict(model_1, X, Y, cv=10)
-print('Scalar  Val RMSE =',np.sqrt(metrics.mean_squared_error(Y,Y_pred1)))
-#Scalar  Val RMSE = 0.1036758588449451
+
+
+def kfold_lin_reg(X,Y):
+
+    test_rmse  = []
+    train_rmse = []
+
+    kf = KFold(n_splits=10, random_state=None, shuffle=False)
+    fold_i =0
+    for train_id, test_id in kf.split(X):
+        fold_i += 1
+        X_train, X_test = X[train_id], X[test_id]
+        Y_train, Y_test = Y[train_id], Y[test_id]
+
+        model_1 = linear_model.LinearRegression()
+        model_1.fit(X_train,Y_train)
+
+        Y_test_pred  = model_1.predict(X_test)
+        Y_train_pred = model_1.predict(X_train)
+
+        test_rmse.append ( np.sqrt( metrics.mean_squared_error(Y_test , Y_test_pred )))
+        train_rmse.append( np.sqrt( metrics.mean_squared_error(Y_train, Y_train_pred)))
+
+        print("Test_RMSE  fold:",fold_i," = ",test_rmse[-1] )
+        print("Train_RMSE fold:",fold_i," = ",train_rmse[-1])
+        
+    all_test_RMSE  = sum(test_rmse)/10
+    all_train_RMSE = sum(train_rmse)/10
+
+    print("\n")
+    print("Overall Test_RMSE  = ", all_test_RMSE  )
+    print("Overall Train_RMSE = ", all_train_RMSE )
+    
+    return test_rmse, train_rmse, all_test_RMSE
+
+
+test_rmse_q1,train_rmse_q1, all_test_RMSE_q1 = kfold_lin_reg(X,Y)
 
 
 
 
 
-
-
+print("\n\n")
 """ ====== <ii> Data Preprocessing ====== """
 print("====== <ii> Data Preprocessing ======")
 
@@ -62,74 +93,39 @@ print("====== <ii> Data Preprocessing ======")
 scaler = StandardScaler()
 scaler.fit_transform(X)
 
-Y_pred2 = cross_val_predict(model_1, scaler.fit_transform(X), Y, cv=10)
-print('Scalar  Val RMSE =',np.sqrt(metrics.mean_squared_error(Y,Y_pred2)))
-#Scalar  Val RMSE = 0.1036758588449451
-#Same
+
+test_rmse_q2,train_rmse_q2,all_test_RMSE_q2 = kfold_lin_reg(scaler.fit_transform(X),Y)
 
 
 
 
 
+
+print("\n\n")
 """ ====== <iii> Feature Selection ====== """
 print("====== <iii> Feature Selection ======")
 
 
 f_test, _ = f_regression(X, Y)
-f_test #/= np.max(f_test)
+f_test /= np.max(f_test)
 print("f_test")
 print(f_test)
 
 # best 123
-
 
 m_test = mutual_info_regression(X, Y)
 m_test /= np.max(m_test)
 print("m_test")
 print(m_test)
 
-# best 123
-
-X_FS = X[:,1:4]
-
-#X2 =X_FS
+# best 234
 
 
-Y_pred_FS = cross_val_predict(model_1, X_FS, Y, cv=10)
-print('Scalar  Val RMSE =',np.sqrt(metrics.mean_squared_error(Y,Y_pred_FS)))
-#Scalar  Val RMSE = 0.1036706732800221
-# almost the same
+print("\n\n")
 
 
-
-
-
-
-
-""" ====== <iv> Feature Encoding ====== """
-print("====== <iv> Feature Encoding ======")
-
-
-
-enc1 =  preprocessing.OneHotEncoder(sparse = False)
-#enc1 =  preprocessing.OneHotEncoder()
-enc1.fit(X)
-
-#print(enc1.n_values_)
-#print(enc1.feature_indices_)
-
-X_Hot = enc1.fit_transform(X)
-
-Y_pred2 = cross_val_predict(model_1, X_Hot, Y, cv=10)
-print('One-Hot Val RMSE =',np.sqrt(metrics.mean_squared_error(Y,Y_pred2)))
-#One-Hot Val RMSE = 272660626045.4346
-
-
-
+test_rmse_q3_fs,train_rmse_q3_fs,all_test_RMSE_q3_fs = kfold_lin_reg(X[:,1:4],Y)
+test_rmse_q3_mi,train_rmse_q3_mi,all_test_RMSE_q3_mi = kfold_lin_reg(X[:,2:5],Y)
 
 
 print("completed")
-
-
-
-
