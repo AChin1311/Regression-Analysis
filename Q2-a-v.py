@@ -169,7 +169,7 @@ def kfold_elst(X,Y,alpha,l1_ratio):
 
 
 
-def hot32acc_best(X_Very_Hot,Hot_comb,reg_model,alpha,l1_ratio):
+def hot32acc_best(X_Very_Hot,Hot_comb,Y,reg_model,alpha,l1_ratio):
     all_test_RMSE_i = 0
     best_RMSE       = 0
     best_comb       = 0
@@ -213,7 +213,7 @@ RMSE_ridge = np.zeros((len(alpha_all),3))
 i=0
 for alpha in alpha_all:
 
-    best_RMSE,best_comb = hot32acc_best(X_Very_Hot,Hot_comb,'ridg',alpha,l1_ratio)
+    best_RMSE,best_comb = hot32acc_best(X_Very_Hot,Hot_comb,Y,'ridg',alpha,l1_ratio)
 
     RMSE_ridge[i,0] = alpha
     RMSE_ridge[i,1] = best_comb
@@ -246,7 +246,7 @@ RMSE_lasso = np.zeros((len(alpha_all),3))
 i=0
 for alpha in alpha_all:
 
-    best_RMSE,best_comb = hot32acc_best(X_Very_Hot,Hot_comb,'lass',alpha,l1_ratio)
+    best_RMSE,best_comb = hot32acc_best(X_Very_Hot,Hot_comb,Y,'lass',alpha,l1_ratio)
 
     RMSE_lasso[i,0] = alpha
     RMSE_lasso[i,1] = best_comb
@@ -277,7 +277,7 @@ l1_ratio_all  = np.array([0.01,0.1,0.3,0.5,0.7,0.9,0.99])
 
 RMSE_elst_list = np.zeros((len(alpha_all)*len(l1_ratio_all),3))
 
-RMSE_elst_map  =np.zeros((len(alpha_all)+1, len(l1_ratio_all)+1 ))
+RMSE_elst_map  = np.zeros((len(alpha_all)+1, len(l1_ratio_all)+1 ))
 RMSE_elst_map[0,1:] = l1_ratio_all #.reshape(1,len(l1_ratio_all))
 RMSE_elst_map[1:,0] = alpha_all #.reshape(len(alpha_all),1)
 
@@ -288,7 +288,7 @@ for alpha in alpha_all:
     j=0
     t1 = time.time()
     for l1_ratio in l1_ratio_all:
-        best_RMSE,best_comb = hot32acc_best(X_Very_Hot,Hot_comb,'elst',alpha,l1_ratio)
+        best_RMSE,best_comb = hot32acc_best(X_Very_Hot,Hot_comb,Y,'elst',alpha,l1_ratio)
         RMSE_elst_list[k,0] = alpha
         RMSE_elst_list[k,1] = best_comb
         RMSE_elst_list[k,2] = best_RMSE
