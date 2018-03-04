@@ -74,9 +74,13 @@ test_y = test_rmse
 train_y = train_rmse
 x = K
 plt.plot(x, test_y)
+plt.xlabel('K')
+plt.ylabel('testing rmse')
 plt.savefig('plot/test_kNN.png')
 plt.clf()
 plt.plot(x,train_y)
+plt.xlabel('K')
+plt.ylabel('training rmse')
 plt.savefig('plot/train_kNN.png')
 plt.clf()
 
