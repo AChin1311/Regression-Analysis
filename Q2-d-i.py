@@ -37,7 +37,7 @@ cont_np = content.values
 X_list = []
 Y_list = []
 
-for i in np.arange(4):
+for i in np.arange(5):
     cont_list_i = cont_np[np.where(cont_np[:,3] == i)]
     X_i = np.delete(cont_list_i[: , 0:5],3,axis=1)
     Y_i = cont_list_i[: ,  5 ]
@@ -96,7 +96,7 @@ def hot16comb(X):
 
 X_Very_Hot = []
 Hot_comb   = []
-for i in np.arange(4):
+for i in np.arange(5):
 
     X_Very_Hot_i,Hot_comb_i = hot16comb(X_list[i])
     X_Very_Hot.append(X_Very_Hot_i)
@@ -182,7 +182,7 @@ best_RMSE_lr_test  = {}
 best_RMSE_lr_train = {}
 best_comb_lr       = {}
 
-for i in np.arange(4):
+for i in np.arange(5):
     best_RMSE_test_i,best_RMSE_train_i,best_comb_i = hot16acc_best(X_Very_Hot[i],Hot_comb[i],Y_list[i],'lin_reg',alpha,l1_ratio)
     best_RMSE_lr_test['work_flow_%d'%i]  = best_RMSE_test_i
     best_RMSE_lr_train['work_flow_%d'%i] = best_RMSE_train_i
@@ -190,11 +190,5 @@ for i in np.arange(4):
 
 del best_RMSE_test_i,best_RMSE_train_i,best_comb_i,i,alpha,l1_ratio
 
-
-
-
-
-
-
-
+print("completed")
 
