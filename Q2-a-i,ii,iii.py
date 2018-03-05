@@ -91,7 +91,7 @@ print("====== <ii> Data Preprocessing ======")
 
 
 scaler = StandardScaler()
-scaler.fit_transform(X)
+#scaler.fit_transform(X)
 
 
 test_rmse_q2,train_rmse_q2,all_test_RMSE_q2 = kfold_lin_reg(scaler.fit_transform(X),Y)
@@ -128,4 +128,6 @@ test_rmse_q3_fs,train_rmse_q3_fs,all_test_RMSE_q3_fs = kfold_lin_reg(X[:,1:4],Y)
 test_rmse_q3_mi,train_rmse_q3_mi,all_test_RMSE_q3_mi = kfold_lin_reg(X[:,2:5],Y)
 
 
+
 print("completed")
+
