@@ -117,6 +117,9 @@ for wf in np.arange(5):
           )
         
     
+    
+
+    
 
 for wf in np.arange(5):
 
@@ -127,6 +130,61 @@ for wf in np.arange(5):
     plt.plot(RMSE_wf[:,0],RMSE_wf[:,2] , color = 'blue')
     plt.xlabel("Order")
     plt.ylabel("RMSE")
+    
+    
+    
+    
+    
+    
+# More test of work_flow_1 higher order
+    
+    
+l1_ratio =0
+
+RMSE_ridge ={}
+
+alpha = 0
+
+wf =1
+    
+    
+RMSE_wf = np.zeros((14,3))
+i=0
+for order in range(1, 15):
+    poly = PolynomialFeatures(order)
+    X_poly = poly.fit_transform(X_list[wf])
+    best_RMSE_test_i,best_RMSE_train_i = kfold_ridg(X_poly,Y_list[wf],alpha)
+        
+    RMSE_wf[i,0] = order
+    RMSE_wf[i,1] = best_RMSE_test_i
+    RMSE_wf[i,2] = best_RMSE_train_i
+    i += 1        
+    
+    print("order = ",order,"done")
+    
+RMSE_column = RMSE_wf[:,1]
+RMSE_ind    = np.argmin(RMSE_column)
+best_order  = RMSE_wf[RMSE_ind,0]
+best_test_err  = RMSE_wf[RMSE_ind,1]
+avg_train_err  = RMSE_wf[RMSE_ind,2]
+
+RMSE_ridge['work_flow_%d'%wf] = RMSE_wf
+
+print("\nRMSE_ridge generated wf = ", wf)
+print("Best test error = ",best_test_err,
+      "\nAvg train error = ",avg_train_err,
+      "\norder = ",best_order,
+      )
+
+    
+    
+RMSE_wf = RMSE_ridge['work_flow_%d'%wf] 
+plt.figure()
+plt.title('work_flow_%d'%wf)
+plt.plot(RMSE_wf[:,0],RMSE_wf[:,1] , color = 'green')
+plt.plot(RMSE_wf[:,0],RMSE_wf[:,2] , color = 'blue')
+plt.xlabel("Order")
+plt.ylabel("RMSE")
     
 
 
@@ -173,7 +231,4 @@ for wf in np.arange(5):
     plt.ylabel('residuals')
 
 
-
-
 print("completed")
-
