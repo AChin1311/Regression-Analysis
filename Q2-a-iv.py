@@ -7,7 +7,7 @@ from sklearn import metrics
 #from sklearn.preprocessing import StandardScaler
 from sklearn import preprocessing
 #from sklearn.feature_selection import f_regression, mutual_info_regression
-#import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 
 
 
@@ -150,6 +150,73 @@ for i in np.arange(32):
 del test_rmse_i,train_rmse_i,all_test_RMSE_i,i,X_in
     
 print("combination with the smallest error:",min(all_test_RMSE_q4, key=all_test_RMSE_q4.get))
+
+
+
+
+
+
+
+
+print("\n\n")
+""" ====== plotting predicted vs true value ====== """
+print("====== plot pred vs true output ======")
+
+
+enc1 =  preprocessing.OneHotEncoder(sparse = False)
+num_sample = X.shape[0]
+
+X0 = X[:,0].reshape((num_sample,1))
+X1 = X[:,1].reshape((num_sample,1))
+X2 = X[:,2].reshape((num_sample,1))
+X3 = X[:,3].reshape((num_sample,1))
+X4 = X[:,4].reshape((num_sample,1))
+
+X_Hot0 = enc1.fit_transform(X0)
+X_Hot1 = enc1.fit_transform(X1)
+X_Hot2 = enc1.fit_transform(X2)
+X_Hot3 = enc1.fit_transform(X3)
+X_Hot4 = enc1.fit_transform(X4)
+
+H0 = X0
+H1 = X_Hot1
+H2 = X_Hot2
+H3 = X3
+H4 = X_Hot4
+
+X_Very_Hot_best = np.concatenate((H0,H1,H2,H3,H4),axis =1)
+
+
+
+model_1 = linear_model.LinearRegression()
+model_1.fit(X_Very_Hot_best,Y)
+Y_pred_1  = model_1.predict(X_Very_Hot_best)
+
+
+
+
+plt.figure()
+yy = Y_pred_1
+plt.title("iv feature encoding")
+xx = Y
+plt.scatter(xx, yy, s = 1,  alpha=0.01)
+plt.xlabel('true value')
+plt.ylabel('fitted value')
+xi = range(0,2)
+yi = [i for i in xi]
+plt.axis([-0.03,1.03,-0.03,1.03])
+plt.plot(xi,yi,color='red')
+
+plt.figure()
+xx = Y_pred_1
+yy = np.abs(xx-Y)
+plt.scatter(xx, yy, s=1, alpha=0.01)
+plt.axis([-0.03,1.03,-0.03,1.03])
+plt.xlabel('fitted value')
+plt.ylabel('residuals')
+
+
+
 
 
 print("completed")
