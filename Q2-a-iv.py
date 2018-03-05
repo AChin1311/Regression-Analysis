@@ -4,10 +4,10 @@ from sklearn import linear_model
 from sklearn.model_selection import KFold
 #from sklearn.model_selection import cross_val_predict, cross_val_score
 from sklearn import metrics
-from sklearn.preprocessing import StandardScaler
+#from sklearn.preprocessing import StandardScaler
 from sklearn import preprocessing
-from sklearn.feature_selection import f_regression, mutual_info_regression
-import matplotlib.pyplot as plt
+#from sklearn.feature_selection import f_regression, mutual_info_regression
+#import matplotlib.pyplot as plt
 
 
 
@@ -107,8 +107,8 @@ def hot32comb(X):
     
     for i in np.arange(32):
     
-        a = str(bin(i))[2:]
-        a = a.rjust(5,'0')
+        a = str(bin(i))[2:].rjust(5,'0')
+#        a = a.rjust(5,'0')
             
         H0 = X0*int(a[0]) + X_Hot0*(1-int(a[0]))
         H1 = X1*int(a[1]) + X_Hot1*(1-int(a[1]))
@@ -126,6 +126,7 @@ def hot32comb(X):
 
 X_Very_Hot,Hot_comb = hot32comb(X)
     
+
     
 test_rmse_q4     = {}
 train_rmse_q4    = {}
@@ -148,10 +149,7 @@ for i in np.arange(32):
     
 del test_rmse_i,train_rmse_i,all_test_RMSE_i,i,X_in
     
-
-
+print("combination with the smallest error:",min(all_test_RMSE_q4, key=all_test_RMSE_q4.get))
 
 
 print("completed")
-
-
