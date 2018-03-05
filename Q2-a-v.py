@@ -441,8 +441,6 @@ model_3 = linear_model.ElasticNet(alpha,l1_ratio)
 model_3.fit(X_Very_Hot_best,Y)
 Y_pred_3  = model_3.predict(X_Very_Hot_best)
 
-
-
 plt.figure()
 yy = Y_pred_3
 plt.title("v elastic")
@@ -462,6 +460,5 @@ plt.scatter(xx, yy, s=1, alpha=0.01)
 plt.axis([-0.03,1.03,-0.03,1.03])
 plt.xlabel('fitted value')
 plt.ylabel('residuals')
-
 
 print("completed")
