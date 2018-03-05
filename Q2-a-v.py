@@ -195,7 +195,6 @@ def hot32acc_best(X_Very_Hot,Hot_comb,Y,reg_model,alpha,l1_ratio):
             best_RMSE = all_test_RMSE_i
             best_comb = name
 
-        
     return best_RMSE,best_comb
 
 
@@ -237,8 +236,11 @@ print("\n")
 print("=== 2. Lasso ===")
 l1_ratio =1
 
-alpha_all = np.array([0.1,0.3,0.5,1,3,5,10,20,40,80,120])
+#alpha_all = np.array([0.001,0.002,0.005,0.01,0.1,0.3,0.5,1,5,10])
 
+#alpha_all = np.array([0.0001])
+
+alpha_all = np.array([0.0001,0.001,0.002,0.005,0.01])
 
 RMSE_lasso = np.zeros((len(alpha_all),3))
 
@@ -261,8 +263,12 @@ RMSE_lass_column = RMSE_lasso[:,2]
 RMSE_ind         = np.argmin(RMSE_lass_column)
 
 
-#0.10413993071507754
+print("min alpha index is" , RMSE_ind)
+print("The error was ",RMSE_lass_column[RMSE_ind])
 
+
+#alpha = 0.0001
+#The error was  0.08837160165492905
 
 
 print("\n")
@@ -319,7 +325,7 @@ print("Best error = ",best_error,"\nalpha = ",best_alpha,"\ncombination = ",best
 #Best error =  0.10021045142290859 
 #alpha =  0.5 
 #combination =  01100
-
+#l1_ratio = 0.01
 
 
 
